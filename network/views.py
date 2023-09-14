@@ -8,7 +8,14 @@ from .models import User, Post
 
 
 def index(request):
-    return render(request, "network/index.html")
+    if request.method == "POST":
+        post_text = request.POST['text']
+        p = Post(user = request.user, text = post_text)
+        p.save()
+    posts = Post.objects.all()
+    return render(request, "network/index.html", {
+        "posts": posts
+    })
 
 
 def login_view(request):

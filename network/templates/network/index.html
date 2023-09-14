@@ -2,4 +2,29 @@
 
 {% block body %}
     <h2 class="heading">All Posts</h2>
+    <div class="new_post">
+        <h5>New Post</h5>
+        <form action="{% url 'index' %}" method="post">
+            {% csrf_token %}
+            <textarea name="text" cols="80" rows="1"></textarea>
+            <br>
+            <input type="submit" />
+        </form>
+    </div>
+    <div class="posts">
+        {% for post in posts %}
+        <div class="post">
+            <div class="post__username">
+                <strong>{{ post.user.username }}</strong>
+            </div>
+            <div class="post__details">
+                <p>Edit</p>
+                <p>{{ post.text }}</p>
+                <p>{{ post.timestamp }}</p>
+                <p>{{ post.likes.count }}</p>
+                <p>Comment</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
 {% endblock %}
