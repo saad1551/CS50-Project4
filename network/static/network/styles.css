@@ -14,3 +14,12 @@
     border: 1px solid lightgray;
     padding: 10px;
 }
+
+.profile__detailsUsername {
+    text-align: center;
+}
+
+.profile__detailsFollowing {
+    display: flex;
+    justify-content: center;
+}

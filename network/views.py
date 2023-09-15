@@ -12,7 +12,8 @@ def index(request):
         post_text = request.POST['text']
         p = Post(user = request.user, text = post_text)
         p.save()
-    posts = Post.objects.all()
+        return HttpResponseRedirect(reverse("index"))
+    posts = Post.objects.all().order_by('-timestamp')
     return render(request, "network/index.html", {
         "posts": posts
     })
@@ -68,3 +69,10 @@ def register(request):
         return HttpResponseRedirect(reverse("index"))
     else:
         return render(request, "network/register.html")
+    
+
+def profile(request, name):
+    user = User.objects.get(username = name)
+    return render(request, "network/profile.html", {
+        "user": user
+    })
