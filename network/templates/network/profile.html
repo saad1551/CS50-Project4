@@ -4,20 +4,25 @@
 <div class="profile">
     <div class="profile__details">
         <div class="profile__detailsUsername">
-            <p>{{ user.username }} &nbsp;</p>
+            <p>{{ profile.username }} &nbsp;</p>
         </div>
         <div class="profile__detailsFollowing">
-            <p>{{ user.followers.count }} followers &nbsp;</p>
-            <p>{{ user.following.count }} following &nbsp;</p>
+            <p>{{ profile.followers.count }} followers &nbsp;</p>
+            <p>{{ profile.following.count }} following &nbsp;</p>
         </div>
         <div class="profile__detailsAction">
-            
+            {% if user != profile %}
+            <form action="{% url 'profile' profile.username %}" method="POST">
+                {% csrf_token %}
+                <input type="submit" name="follow" value="Follow">
+            </form>
+            {% endif %}
         </div>
     </div>
 </div>
 
 <div class="posts">
-{% for post in user.posts.all %}
+{% for post in profile.posts.all %}
     <div class="post">
         <div class="post__username">
             <strong><a href="{% url 'profile' post.user.username %}">{{ post.user.username }}</a></strong>
@@ -33,3 +38,6 @@
 {% endfor %}
 </div>
 {% endblock %}
+
+<script>
+</script>

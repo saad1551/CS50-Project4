@@ -72,7 +72,15 @@ def register(request):
     
 
 def profile(request, name):
+    if request.method == "POST":
+        if request.POST.get('follow'):
+            user_to_follow = User.objects.get(username = name)
+            user_to_follow.followers.add(request.user)
+            # request.user.following.add(user_to_follow)
+        return HttpResponseRedirect(reverse("profile", kwargs={
+            "name": name
+        }))
     user = User.objects.get(username = name)
     return render(request, "network/profile.html", {
-        "user": user
+        "profile": user,
     })
