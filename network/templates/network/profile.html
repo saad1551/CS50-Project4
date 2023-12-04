@@ -12,10 +12,17 @@
         </div>
         <div class="profile__detailsAction">
             {% if user != profile %}
-            <form action="{% url 'profile' profile.username %}" method="POST">
-                {% csrf_token %}
-                <input type="submit" name="follow" value="Follow">
-            </form>
+                {% if follow %}
+                    <form action="{% url 'profile' profile.username %}" method="POST">
+                        {% csrf_token %}
+                        <input type="submit" name="follow" value="Follow">
+                    </form>
+                {% else %}
+                <form action="{% url 'profile' profile.username %}" method="POST">
+                    {% csrf_token %}
+                    <input type="submit" name="unfollow" value="Unfollow">
+                </form>
+                {% endif %}
             {% endif %}
         </div>
     </div>

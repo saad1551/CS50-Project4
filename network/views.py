@@ -3,8 +3,9 @@ from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
+from django.core.paginator import Paginator
 
-from .models import User, Post
+from .models import User, Post, Follow
 
 
 def index(request):
@@ -74,13 +75,28 @@ def register(request):
 def profile(request, name):
     if request.method == "POST":
         if request.POST.get('follow'):
-            user_to_follow = User.objects.get(username = name)
-            user_to_follow.followers.add(request.user)
-            # request.user.following.add(user_to_follow)
+            f = Follow(follower=request.user, followed=User.objects.get(username=name))
+            f.save()
+        elif request.POST.get('unfollow'):
+            f = Follow.objects.get(follower=request.user, followed=User.objects.get(username=name))
+            f.delete()
         return HttpResponseRedirect(reverse("profile", kwargs={
             "name": name
         }))
     user = User.objects.get(username = name)
     return render(request, "network/profile.html", {
         "profile": user,
+        "follow": bool(not request.user in user.followers.all())
     })
+
+def following(request):
+    followed_users = request.user.following.all().values_list('followed')
+    posts = []
+    for followed_user in followed_users:
+        user_posts = Post.objects.filter(user = followed_user[0])
+        for user_post in user_posts:
+            posts.append(user_post)
+    return render(request, "network/index.html", {
+        "posts": posts
+    })
+
