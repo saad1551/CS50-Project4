@@ -86,7 +86,7 @@ def profile(request, name):
     user = User.objects.get(username = name)
     return render(request, "network/profile.html", {
         "profile": user,
-        "follow": bool(not request.user in user.followers.all())
+        "follow": bool(not user.followers.filter(follower=request.user).exists())
     })
 
 def following(request):
