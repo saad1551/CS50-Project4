@@ -24,6 +24,12 @@ def index(request):
             post_to_unlike = Post.objects.get(id=int(request.POST['unlike']))
             l = Like.objects.get(post = post_to_unlike, user = request.user)
             l.delete()
+        elif request.POST.get('edit'):
+            post_id = request.POST['editPostID']
+            edited_text = request.POST['edit']
+            post_to_edit = Post.objects.get(id = post_id)
+            post_to_edit.text = edited_text
+            post_to_edit.save()
     posts = Post.objects.all().order_by('-timestamp')
     paginator = Paginator(posts, 10)
     page_no = request.GET.get('page')

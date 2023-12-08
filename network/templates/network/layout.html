@@ -46,4 +46,11 @@
             {% endblock %}
         </div>
     </body>
+    <script>
+        function editPost(id) {
+            postToEdit = document.getElementById(id)
+            editForm = postToEdit.querySelector('.edit_form')
+            editForm.display = block
+        }
+    </script>
 </html>

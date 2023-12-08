@@ -21,10 +21,16 @@
             <div class="post__username">
                 <strong><a href="{% url 'profile' post.user.username %}">{{ post.user.username }}</a></strong>
             </div>
-            <div class="post__details">
+            <div class="post__details" id="{{ post.id }}">
                 {% if user == post.user %}
-                <p>Edit</p>
+                <button onclick="editPost(post.id)">Edit</button>
                 {% endif %}
+                <form style="display: none;" action="{% url 'index' %}" method="post" class="edit_form">
+                    <input type="hidden" name="editPostID" value="{{ post.id }}">
+                    <input type="text" value="{{ post.text }}" name="edit">
+                    <button onclick="cancelEdit(post.id)">Cancel</button>
+                    <input type="submit" value="Edit">
+                </form>
                 <p>{{ post.text }}</p>
                 <p>{{ post.timestamp }}</p>
                 {% if user.is_authenticated %}
@@ -44,7 +50,6 @@
                     </p>
                 </div>
                 {% endif %}
-                <p>Comment</p>
             </div>
         </div>
         {% endfor %}
