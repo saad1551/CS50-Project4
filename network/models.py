@@ -12,8 +12,11 @@ class Post(models.Model):
 
 
 class Like(models.Model):
-    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name="likes")
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="likes")
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name="likers")
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="liked_posts")
+
+    class Meta:
+        unique_together = ['post', 'user']
 
 class Follow(models.Model):
     follower = models.ForeignKey(User, on_delete=models.CASCADE, related_name='following')

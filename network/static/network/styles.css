@@ -23,3 +23,8 @@
     display: flex;
     justify-content: center;
 }
+
+.like_box
+{
+    display: flex;
+}

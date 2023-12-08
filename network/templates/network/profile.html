@@ -38,7 +38,15 @@
             <p>Edit</p>
             <p>{{ post.text }}</p>
             <p>{{ post.timestamp }}</p>
-            <p>{{ post.likes.count }}</p>
+            <div class="like_box">
+                <form action="{% url 'index' %}" method="post">
+                    {% csrf_token %}
+                    <input type="submit" value="Like" name="like" post="{{ post.id }}">
+                </form>
+                <p>
+                    {{ post.likers.count }}
+                </p>
+            </div>
             <p>Comment</p>
         </div>
     </div>

@@ -4,19 +4,32 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 from django.core.paginator import Paginator
+from django.views.generic import ListView
 
-from .models import User, Post, Follow
+from .models import User, Post, Follow, Like
 
 
 def index(request):
     if request.method == "POST":
-        post_text = request.POST['text']
-        p = Post(user = request.user, text = post_text)
-        p.save()
-        return HttpResponseRedirect(reverse("index"))
+        if request.POST.get('text'):
+            post_text = request.POST['text']
+            p = Post(user = request.user, text = post_text)
+            p.save()
+            return HttpResponseRedirect(reverse("index"))
+        elif request.POST.get('like'):
+            post_to_like = Post.objects.get(id=int(request.POST['like']))
+            l = Like(post = post_to_like, user = request.user)
+            l.save()
+        elif request.POST.get('unlike'):
+            post_to_unlike = Post.objects.get(id=int(request.POST['unlike']))
+            l = Like.objects.get(post = post_to_unlike, user = request.user)
+            l.delete()
     posts = Post.objects.all().order_by('-timestamp')
+    paginator = Paginator(posts, 10)
+    page_no = request.GET.get('page')
+    page_obj = paginator.get_page(page_no)
     return render(request, "network/index.html", {
-        "posts": posts
+        "page_obj": page_obj
     })
 
 
@@ -96,7 +109,8 @@ def following(request):
         user_posts = Post.objects.filter(user = followed_user[0])
         for user_post in user_posts:
             posts.append(user_post)
+    postsPages = Paginator(posts, 10)
     return render(request, "network/index.html", {
-        "posts": posts
+        "posts": postsPages
     })
 
