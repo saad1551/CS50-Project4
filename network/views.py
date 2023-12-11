@@ -105,6 +105,7 @@ def profile(request, name):
     user = User.objects.get(username = name)
     return render(request, "network/profile.html", {
         "profile": user,
+        "profile_posts": Post.objects.filter(user = user.id).order_by('-timestamp'),
         "follow": bool(not user.followers.filter(follower=request.user).exists())
     })
 
@@ -120,3 +121,12 @@ def following(request):
         "posts": postsPages
     })
 
+def edit(request, postID):
+    if request.method == 'POST':
+        post_to_edit = Post.objects.get(id = int(postID))
+        post_to_edit.text = request.POST["edited_text"]
+        post_to_edit.save()
+        return HttpResponseRedirect(reverse(index))
+    return render(request, "network/edit.html", {
+        "post": Post.objects.get(id = int(postID))
+    })

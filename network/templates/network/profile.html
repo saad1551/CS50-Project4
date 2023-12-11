@@ -29,14 +29,16 @@
 </div>
 
 <div class="posts">
-{% for post in profile.posts.all %}
+{% for post in profile_posts %}
     <div class="post">
         <div class="post__username">
             <strong><a href="{% url 'profile' post.user.username %}">{{ post.user.username }}</a></strong>
         </div>
         <div class="post__details">
-            <p>Edit</p>
             <p>{{ post.text }}</p>
+            {% if user == post.user %}
+                <a href="{% url 'edit' post.id %}">Edit</a>
+            {% endif %}
             <p>{{ post.timestamp }}</p>
             <div class="like_box">
                 <form action="{% url 'index' %}" method="post">
