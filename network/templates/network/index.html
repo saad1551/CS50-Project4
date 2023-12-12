@@ -29,17 +29,13 @@
                 <p>{{ post.timestamp }}</p>
                 {% if user.is_authenticated %}
                 <div class="like_box">
-                    <form action="{% url 'index' %}" method="post">
-                        {% csrf_token %}
-                        {% if user|user_has_not_liked:post %}
-                        <input type="hidden" value="{{ post.id }}" name="like">
-                        <input type="submit" value="Like">
-                        {% else %}
-                        <input type="hidden" value="{{ post.id }}" name="unlike">
-                        <input type="submit" value="Unlike">
-                        {% endif %}
-                    </form>
-                    <p>
+                    {% csrf_token %}
+                    {% if user|user_has_not_liked:post %}
+                    <button onclick="likePost(this, event)" data-postid="{{ post.id }}" data-liker="{{ user.username }}">Like</button>
+                    {% else %}
+                    <button onclick="likePost(this, event)" data-postid="{{ post.id }}" data-liker="{{ user.username }}">Like</button>
+                    {% endif %}
+                    <p class="like_count">
                         {{ post.likers.count }}
                     </p>
                 </div>

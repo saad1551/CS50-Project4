@@ -5,6 +5,9 @@ from django.shortcuts import render
 from django.urls import reverse
 from django.core.paginator import Paginator
 from django.views.generic import ListView
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+import json
 
 from .models import User, Post, Follow, Like
 
@@ -16,14 +19,14 @@ def index(request):
             p = Post(user = request.user, text = post_text)
             p.save()
             return HttpResponseRedirect(reverse("index"))
-        elif request.POST.get('like'):
-            post_to_like = Post.objects.get(id=int(request.POST['like']))
-            l = Like(post = post_to_like, user = request.user)
-            l.save()
-        elif request.POST.get('unlike'):
-            post_to_unlike = Post.objects.get(id=int(request.POST['unlike']))
-            l = Like.objects.get(post = post_to_unlike, user = request.user)
-            l.delete()
+        # elif request.POST.get('like'):
+        #     post_to_like = Post.objects.get(id=int(request.POST['like']))
+        #     l = Like(post = post_to_like, user = request.user)
+        #     l.save()
+        # elif request.POST.get('unlike'):
+        #     post_to_unlike = Post.objects.get(id=int(request.POST['unlike']))
+        #     l = Like.objects.get(post = post_to_unlike, user = request.user)
+        #     l.delete()
         elif request.POST.get('edit'):
             post_id = request.POST['editPostID']
             edited_text = request.POST['edit']
@@ -130,3 +133,18 @@ def edit(request, postID):
     return render(request, "network/edit.html", {
         "post": Post.objects.get(id = int(postID))
     })
+
+@csrf_exempt
+def like(request):
+    if request.method != 'POST':
+        return JsonResponse({"error": "POST request required."}, status=400)
+    
+    data = json.loads(request.body)
+    post_to_like = Post.objects.get(id = int(data.get('postID')))
+    liker = User.objects.get(username = data.get('liker'))
+
+    l = Like(post = post_to_like, user = liker)
+
+    l.save()
+
+    return JsonResponse({"message": "Liked."}, status=201)
