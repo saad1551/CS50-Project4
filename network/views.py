@@ -143,8 +143,20 @@ def like(request):
     post_to_like = Post.objects.get(id = int(data.get('postID')))
     liker = User.objects.get(username = data.get('liker'))
 
-    l = Like(post = post_to_like, user = liker)
+    if data.get('operation') == 'like':
+        try:
+            l = Like(post = post_to_like, user = liker)
+        except:
+            return JsonResponse({"message": "failure"}, status=201)
 
-    l.save()
+        l.save()
+    
+    elif data.get('operation') == 'unlike':
+        try:
+            l = Like.objects.get(post = post_to_like, user = liker)
+        except:
+            return JsonResponse({"message": "failure"}, status=201)
+        
+        l.delete()
 
-    return JsonResponse({"message": "Liked."}, status=201)
+    return JsonResponse({"message": "success."}, status=201)
