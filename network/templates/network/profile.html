@@ -1,5 +1,7 @@
 {% extends "network/layout.html" %}
 
+{% load custom_filters %}
+
 {% block body %}
 <div class="profile">
     <div class="profile__details">
@@ -41,11 +43,13 @@
             {% endif %}
             <p>{{ post.timestamp }}</p>
             <div class="like_box">
-                <form action="{% url 'index' %}" method="post">
-                    {% csrf_token %}
-                    <input type="submit" value="Like" name="like" post="{{ post.id }}">
-                </form>
-                <p>
+                {% csrf_token %}
+                {% if user|user_has_not_liked:post %}
+                <button onclick="likePost(this, event)" data-postid="{{ post.id }}" data-liker="{{ user.username }}">Like</button>
+                {% else %}
+                <button onclick="unLikePost(this, event)" data-postid="{{ post.id }}" data-liker="{{ user.username }}">Unlike</button>
+                {% endif %}
+                <p class="like_count">
                     {{ post.likers.count }}
                 </p>
             </div>

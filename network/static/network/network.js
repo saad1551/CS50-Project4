@@ -1,6 +1,6 @@
 async function likePost(likeBtn, e) {
     e.preventDefault()
-    await fetch("like", {
+    await fetch("/like", {
         method: "POST",
         body: JSON.stringify({
             operation: "like",
@@ -19,7 +19,8 @@ async function likePost(likeBtn, e) {
 
 async function unLikePost(unLikeBtn, e) {
     e.preventDefault()
-    await fetch("like", {
+    console.log("unlike post function called")
+    await fetch("/like", {
         method: "POST",
         body: JSON.stringify({
             operation: "unlike",

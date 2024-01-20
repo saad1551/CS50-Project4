@@ -33,7 +33,7 @@
                     {% if user|user_has_not_liked:post %}
                     <button onclick="likePost(this, event)" data-postid="{{ post.id }}" data-liker="{{ user.username }}">Like</button>
                     {% else %}
-                    <button onclick="likePost(this, event)" data-postid="{{ post.id }}" data-liker="{{ user.username }}">Unlike</button>
+                    <button onclick="unLikePost(this, event)" data-postid="{{ post.id }}" data-liker="{{ user.username }}">Unlike</button>
                     {% endif %}
                     <p class="like_count">
                         {{ post.likers.count }}

@@ -113,15 +113,18 @@ def profile(request, name):
     })
 
 def following(request):
-    followed_users = request.user.following.all().values_list('followed')
+    followed_users = request.user.following.all().values_list('followed', flat=True)
     posts = []
     for followed_user in followed_users:
-        user_posts = Post.objects.filter(user = followed_user[0])
+        user_posts = Post.objects.filter(user = followed_user)
         for user_post in user_posts:
             posts.append(user_post)
-    postsPages = Paginator(posts, 10)
+    posts = sorted(posts, key= lambda x:x.timestamp, reverse=True)
+    paginator = Paginator(posts, 10)
+    page_no = request.GET.get('page')
+    page_obj = paginator.get_page(page_no)
     return render(request, "network/index.html", {
-        "posts": postsPages
+        "page_obj": page_obj
     })
 
 def edit(request, postID):
